@@ -7,8 +7,11 @@ export default function HomePage() {
   const [account, setAccount] = useState(undefined);
   const [atm, setATM] = useState(undefined);
   const [balance, setBalance] = useState(undefined);
+  const [message, setMessage] = useState(" ");
+  const [newName, setnewName] = useState(" ");
+  const [newAge, setnewAge] = useState(" ");
 
-  const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+  const contractAddress = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0";
   const atmABI = atm_abi.abi;
 
   const getWallet = async () => {
@@ -89,12 +92,81 @@ export default function HomePage() {
       getBalance();
     }
 
+    //Added functionality
+
+    async function setName() {
+      if (atm) {
+        let tx = await atm.updateName(newName);
+        await tx.wait();
+
+        alert("Successful");
+        setnewName(" ");
+      }
+    }
+    async function setAge() {
+      if (atm) {
+        let tx = await atm.updateAge(newAge);
+        await tx.wait();
+
+        alert("Successful");
+        setnewAge(" ");
+      }
+    }
+    async function getMessage() {
+      if (atm) {
+        let tx = await atm.getEntityDetails();
+        const { name, age } = tx;
+
+        const name1 = [`${name}  is ${age}  years old`];
+
+        setMessage(name1);
+      }
+    }
+    function handleMessageChange(e) {
+      setnewName(e.target.value);
+    }
+
+    function handleAgeChange(e) {
+      setnewAge(e.target.value);
+    }
+
+    function handleClearMessage(e) {
+      setnewAge(" ");
+      setnewName(" ");
+    }
+
     return (
       <div>
         <p>Your Account: {account}</p>
         <p>Your Balance: {balance} ETH</p>
         <button onClick={deposit}>Deposit 1 ETH</button>
         <button onClick={withdraw}>Withdraw 1 ETH</button>
+        <br />
+        <h3>
+          <i>Set Name</i>
+        </h3>
+        <input
+          type="text"
+          placeholder="Set Message"
+          value={newName}
+          onChange={handleMessageChange}
+        />
+        <br />
+        <button onClick={setName}>Set Name</button>
+        <br />
+        <input
+          type="number"
+          placeholder="Set age"
+          value={newAge}
+          onChange={handleAgeChange}
+        />
+        <br />
+        <button onClick={setAge}>Set Age</button>
+        <br />
+        <br />
+        <button onClick={getMessage}>Get Message</button>
+        <h2>{message}</h2>
+        <br />
       </div>
     );
   };
@@ -119,11 +191,11 @@ export default function HomePage() {
           text-align: center;
           justify-content: center;
           align-items: center;
-          background-color: blue;
+          background-color: #000080;
           color: white;
         }
         button {
-          background-color: #4b80f7;
+          background-color: black;
           padding: 1em;
           border-radius: 10px;
           border: 0;
